@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Background Remover</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+/* =========================
+   BASIC RESET
+========================= */
+<style>
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: "Inter", Arial, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: #1d1f20;
+  color: #ffffff;
+}
+
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.background-remover {
+  position: relative;
+
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 35px 30px 45px;
+}
+
+
+/* =========================
+   LOGO
+========================= */
+
+.logo {
+  position: absolute;
+
+  top: 32px;
+  left: 45px;
+
+  width: 70px;
+  height: 55px;
+}
+
+.logo-top,
+.logo-bottom {
+  position: absolute;
+
+  width: 48px;
+  height: 48px;
+
+  transform: rotate(30deg) skewX(-30deg) scaleY(0.65);
+
+  border-radius: 3px;
+}
+
+.logo-top {
+  background: #65727f;
+
+  top: 0;
+  left: 8px;
+
+  z-index: 2;
+}
+
+.logo-bottom {
+  background: #aab1b7;
+
+  top: 12px;
+  left: 8px;
+
+  z-index: 1;
+}
+
+
+/* =========================
+   PLUS ICON
+========================= */
+
+.plus-icon {
+  position: relative;
+
+  width: 100px;
+  height: 100px;
+
+  margin-top: 180px;
+  margin-bottom: 55px;
+}
+
+.plus-icon span {
+  position: absolute;
+
+  display: block;
+
+  background: #9cff3b;
+
+  border-radius: 10px;
+
+  box-shadow: 0 0 5px rgba(156, 255, 59, 0.25);
+}
+
+.plus-icon .horizontal {
+  width: 100px;
+  height: 17px;
+
+  left: 0;
+  top: 41px;
+}
+
+.plus-icon .vertical {
+  width: 17px;
+  height: 100px;
+
+  top: 0;
+  left: 41px;
+}
+
+
+/* =========================
+   HEADING
+========================= */
+
+h1 {
+  max-width: 900px;
+
+  color: #9cff3b;
+
+  text-align: center;
+
+  font-size: clamp(48px, 6vw, 82px);
+
+  font-weight: 800;
+
+  line-height: 1.25;
+
+  letter-spacing: -2px;
+
+  margin-bottom: 65px;
+}
+
+
+/* =========================
+   UPLOAD BUTTON
+========================= */
+
+.upload-btn {
+  min-width: 560px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  gap: 25px;
+
+  padding: 28px 60px;
+
+  background: #9cff3b;
+
+  color: #111111;
+
+  font-size: 43px;
+  font-weight: 500;
+
+  border-radius: 80px;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.upload-btn:hover {
+  background: #adff5f;
+
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 10px 30px rgba(156, 255, 59, 0.2);
+}
+
+.upload-btn:active {
+  transform: scale(0.98);
+}
+
+.upload-icon {
+  width: 58px;
+  height: 58px;
+}
+
+
+/* =========================
+   EXAMPLES
+========================= */
+
+.examples {
+  margin-top: 110px;
+
+  text-align: center;
+}
+
+.examples > p {
+  color: #d0d0d0;
+
+  font-size: 31px;
+  font-weight: 500;
+
+  margin-bottom: 25px;
+}
+
+
+/* Images container */
+
+.example-images {
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+
+  gap: 15px;
+}
+
+
+/* Example button */
+
+.example {
+  width: 135px;
+  height: 135px;
+
+  padding: 0;
+
+  background: transparent;
+
+  border: 3px solid #9cff3b;
+  border-radius: 35px;
+
+  overflow: hidden;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.example:hover {
+  transform: translateY(-5px);
+
+  box-shadow:
+    0 0 20px rgba(156, 255, 59, 0.3);
+}
+
+.example img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+  margin-top: 80px;
+
+  color: #c8c8c8;
+
+  text-align: center;
+
+  font-size: 24px;
+
+  line-height: 1.8;
+}
+
+footer a {
+  color: #9cff3b;
+
+  text-decoration: underline;
+
+  text-underline-offset: 3px;
+}
+
+footer a:hover {
+  color: #b6ff70;
+}
+
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 900px) {
+
+  .logo {
+    left: 25px;
+    top: 25px;
+
+    transform: scale(0.8);
+  }
+
+  .plus-icon {
+    margin-top: 150px;
+
+    transform: scale(0.8);
+  }
+
+  h1 {
+    font-size: 55px;
+  }
+
+  .upload-btn {
+    min-width: 480px;
+
+    padding: 25px 45px;
+
+    font-size: 34px;
+  }
+
+  .upload-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .example {
+    width: 110px;
+    height: 110px;
+
+    border-radius: 28px;
+  }
+
+  footer {
+    font-size: 20px;
+  }
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+  .background-remover {
+    padding:
+      25px
+      18px
+      35px;
+  }
+
+  .logo {
+    top: 20px;
+    left: 20px;
+
+    transform-origin: top left;
+    transform: scale(0.65);
+  }
+
+
+  /* Plus */
+
+  .plus-icon {
+    width: 65px;
+    height: 65px;
+
+    margin-top: 125px;
+    margin-bottom: 40px;
+  }
+
+  .plus-icon .horizontal {
+    width: 65px;
+    height: 11px;
+
+    top: 27px;
+  }
+
+  .plus-icon .vertical {
+    width: 11px;
+    height: 65px;
+
+    left: 27px;
+  }
+
+
+  /* Heading */
+
+  h1 {
+    font-size: 40px;
+
+    line-height: 1.2;
+
+    letter-spacing: -1px;
+
+    margin-bottom: 45px;
+  }
+
+
+  /* Upload */
+
+  .upload-btn {
+    width: 90%;
+    min-width: 0;
+
+    padding: 20px 25px;
+
+    gap: 15px;
+
+    font-size: 25px;
+  }
+
+  .upload-icon {
+    width: 35px;
+    height: 35px;
+  }
+
+
+  /* Examples */
+
+  .examples {
+    margin-top: 80px;
+  }
+
+  .examples > p {
+    font-size: 22px;
+  }
+
+  .example-images {
+    gap: 8px;
+  }
+
+  .example {
+    width: 75px;
+    height: 75px;
+
+    border-width: 2px;
+
+    border-radius: 20px;
+  }
+
+
+  /* Footer */
+
+  footer {
+    margin-top: 65px;
+
+    font-size: 15px;
+
+    line-height: 1.7;
+  }
+
+}
+</style>
+
+<body>
+
+  <main class="background-remover">
+
+    <!-- Logo -->
+    <div class="logo">
+      <div class="logo-top"></div>
+      <div class="logo-bottom"></div>
+    </div>
+
+
+    <!-- Plus Icon -->
+    <div class="plus-icon">
+      <span class="vertical"></span>
+      <span class="horizontal"></span>
+    </div>
+
+
+    <!-- Main Heading -->
+    <h1>
+      Upload an image to<br>
+      remove the<br>
+      background
+    </h1>
+
+
+    <!-- Upload Button -->
+    <label for="imageUpload" class="upload-btn">
+
+      <svg
+        class="upload-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M12 16V4"></path>
+        <path d="M7 9l5-5 5 5"></path>
+        <path d="M5 14v5h14v-5"></path>
+      </svg>
+
+      <span>Upload Image</span>
+
+    </label>
+
+    <input
+      type="file"
+      id="imageUpload"
+      accept="image/png,image/jpeg,image/webp"
+      hidden
+    >
+
+
+    <!-- Examples -->
+    <section class="examples">
+
+      <p>No image? Try one of these:</p>
+
+      <div class="example-images">
+
+        <button class="example">
+          <img
+            src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200"
+            alt="Person example"
+          >
+        </button>
+
+        <button class="example">
+          <img
+            src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=200"
+            alt="Object example"
+          >
+        </button>
+
+        <button class="example">
+          <img
+            src="https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?w=200"
+            alt="Car example"
+          >
+        </button>
+
+        <button class="example">
+          <img
+            src="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=200"
+            alt="Paint example"
+          >
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- Footer -->
+    <footer>
+
+      <p>
+        By uploading an image or URL you agree to our
+        <a href="#">Terms of Service</a>.
+      </p>
+
+      <p>
+        To learn more about how we handle your personal data,<br>
+        check our
+        <a href="#">Privacy Policy</a>.
+      </p>
+
+    </footer>
+
+  </main>
+
+</body>
+</html>
