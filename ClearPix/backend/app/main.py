@@ -1,10 +1,11 @@
+import time
 from io import BytesIO
 
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
-from PIL import Image
-from rembg import remove
+
+from app.services.background_removal import remove_background
 
 
 app = FastAPI(
@@ -14,7 +15,6 @@ app = FastAPI(
 )
 
 
-# Allow requests from React frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
@@ -26,27 +26,18 @@ app.add_middleware(
 
 @app.get("/")
 def root():
-    return {
-        "message": "ClearPix API is running 🚀"
-    }
+    return {"message": "ClearPix API is running"}
 
 
 @app.get("/health")
 def health():
-    return {
-        "status": "healthy"
-    }
+    return {"status": "healthy"}
 
 
 @app.post("/remove-background")
-async def remove_background(file: UploadFile = File(...)):
+async def remove_background_endpoint(file: UploadFile = File(...)):
 
-    # Check file type
-    allowed_types = {
-        "image/jpeg",
-        "image/png",
-        "image/webp",
-    }
+    allowed_types = {"image/jpeg", "image/png", "image/webp"}
 
     if file.content_type not in allowed_types:
         raise HTTPException(
@@ -55,30 +46,23 @@ async def remove_background(file: UploadFile = File(...)):
         )
 
     try:
-        # Read uploaded image
         image_bytes = await file.read()
 
-        # Open image
-        input_image = Image.open(BytesIO(image_bytes))
-
-        # Convert to RGBA
-        input_image = input_image.convert("RGBA")
-
-        # Remove background using AI
-        output_image = remove(input_image)
-
-        # Save result to memory
-        output_buffer = BytesIO()
-        output_image.save(output_buffer, format="PNG")
-        output_buffer.seek(0)
+        start = time.perf_counter()
+        result_bytes = remove_background(image_bytes)
+        elapsed = round((time.perf_counter() - start) * 1000)
 
         return StreamingResponse(
-            output_buffer,
+            BytesIO(result_bytes),
             media_type="image/png",
             headers={
-                "Content-Disposition": 'attachment; filename="clearpix-result.png"'
+                "Content-Disposition": 'attachment; filename="clearpix-result.png"',
+                "X-Processing-Time": f"{elapsed}ms",
             },
         )
+
+    except HTTPException:
+        raise
 
     except Exception as e:
         raise HTTPException(
